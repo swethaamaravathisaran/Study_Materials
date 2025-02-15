@@ -1,0 +1,89 @@
+class Solution {
+    class Pair
+    {
+        int vertex;
+        int weight;
+        Pair(int vertex,int weight)
+        {
+            this.vertex=vertex;
+            this.weight=weight;
+        }
+    }
+    class IPair
+    {
+        int first;
+        int second;
+        IPair(int first,int second)
+        {
+            this.first=first;
+            this.second=second;
+        }
+    }
+    
+    public int networkDelayTime(int[][] times, int n, int k) {
+        ArrayList<IPair>[] graph=new ArrayList[n+1];
+        for(int i=1;i<=n;i++)
+        {
+            graph[i]=new ArrayList<IPair>();
+        }
+        for(int j=0;j<times.length;j++)
+        {
+            
+            
+                int u=times[j][0];
+                int v=times[j][1];
+                int wt=times[j][2];
+                graph[u].add(new IPair(v,wt));
+            
+        }
+        int[] ans=new int[n+1];
+        boolean[] visited=new boolean[n+1];
+        for(int a=0;a<ans.length;a++)
+        {
+            ans[a]=Integer.MAX_VALUE;
+        }
+        ans[k]=0;
+        PriorityQueue<Pair> sol = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        sol.add(new Pair(k,0));
+        while(sol.size()>0)
+        {
+            Pair rem=sol.poll();
+            int cv=rem.vertex;
+            int cw=rem.weight;
+            for( IPair nbr:graph[cv])
+            {
+                int nnbr=nbr.first;
+                int nw=nbr.second;
+                int tw=cw+nw;
+                if(ans[nnbr]>tw)
+                {
+                    ans[nnbr]=tw;
+                    sol.add(new Pair(nnbr,tw));
+                }
+            }
+        }
+        // for(int b=0;b<ans.length;b++)
+        // {
+        //     if(ans[b]==Integer.MAX_VALUE)
+        //     {
+        //        return -1;
+        //     }
+        // }
+        // int max=-0;
+        // for(int c=0;c<ans.length;c++)
+        // {
+        //     if(ans[c]>max)
+        //     {
+        //         max=ans[c];
+        //     }
+        // }
+        int max = 0;
+        for (int i = 1; i <= n; i++) {
+            if (ans[i] == Integer.MAX_VALUE) return -1;
+            max = Math.max(max, ans[i]);
+        }
+
+
+        return max;
+    }
+}
